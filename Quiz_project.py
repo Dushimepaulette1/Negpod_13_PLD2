@@ -120,3 +120,31 @@ class QuizApp:
         }
         self.current_user = None  # Initialize current user as None
 
+    def main_menu(self):
+        print("\n******************************************")
+        print("*                                        *")
+        print("*        WELCOME TO THE MENU DRIVEN      *")
+        print("*               QUIZ PROGRAM             *")
+        print("*                                        *")
+        print("******************************************")
+        print("\nMAIN MENU:")
+        print("1. Create User")
+        print("2. Login")
+        print("3. Admin Login")
+        print("4. Exit")
+
+        choice = input("\nEnter your choice (1-4): ").strip()
+
+        if choice == "1":
+            self.create_user()
+        elif choice == "2":
+            self.login()
+        elif choice == "3":
+            self.admin_login()
+        elif choice == "4":
+            print("\nThank you for using the Quiz Program!")
+            return
+        else:
+            print("\nInvalid choice. Please enter a number from 1 to 4.")
+            self.main_menu()
+
