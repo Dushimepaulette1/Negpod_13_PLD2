@@ -148,3 +148,25 @@ class QuizApp:
             print("\nInvalid choice. Please enter a number from 1 to 4.")
             self.main_menu()
 
+    def create_user(self):
+        print("\nCREATE USER")
+        username = input("Enter username: ").strip()
+        password = input("Enter password: ").strip()
+        self.users.append(User(username, password))
+        print(f"\nUser '{username}' created successfully!")
+        self.main_menu()
+
+    def login(self):
+        print("\nLOGIN")
+        username = input("Enter username: ").strip()
+        password = input("Enter password: ").strip()
+
+        for user in self.users:
+            if user.username == username and user.password == password:
+                self.current_user = user
+                self.user_menu()
+                return
+
+        print("\nInvalid username or password. Please try again.")
+        self.main_menu()
+
