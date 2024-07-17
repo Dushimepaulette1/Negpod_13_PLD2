@@ -283,3 +283,71 @@ def user_menu(self):
     else:
         print("\nInvalid choice. Please enter a number from 1 to 3.")
         self.user_menu()
+
+ def admin_menu(self):
+        print(f"\nWelcome, {self.current_user.username}!")
+        print("\nADMIN MENU:")
+        print("1. Add Question")
+        print("2. Update Question")
+        print("3. Delete Question")
+        print("4. List All Questions")
+        print("5. Logout")
+
+        choice = input("\nEnter your choice (1-5): ").strip()
+
+        if choice == "1":
+            self.add_question()
+        elif choice == "2":
+            self.update_question()
+        elif choice == "3":
+            self.delete_question()
+        elif choice == "4":
+            self.list_questions()
+        elif choice == "5":
+            self.current_user = None
+            print("\nLogged out successfully.")
+            self.main_menu()
+        else:
+            print("\nInvalid choice. Please enter a number from 1 to 5.")
+            self.admin_menu()
+
+    def take_quiz(self):
+        print("\nTAKE QUIZ")
+        print("Choose a subject:")
+        print("1. ICT")
+        print("2. Maths")
+        print("3. English")
+        print("4. Science")
+        print("5. General Knowledge")
+
+        subject_choice = input("\nEnter your choice (1-5): ").strip()
+
+        subjects = ["ICT", "Maths", "English", "Science", "General Knowledge"]
+        subject = subjects[int(subject_choice) - 1]
+
+        questions = self.questions.get(subject, [])
+
+        if not questions:
+            print(f"\nNo questions found for {subject}. Please contact the admin.")
+            self.user_menu()
+
+        score = 0
+
+        for question in questions:
+            print("\n" + "-" * 50)
+            print(question.text)
+            user_answer = input("Enter 'True' or 'False': ").strip().capitalize()
+
+            if question.check_answer(user_answer):
+                print("Correct!")
+                score += 1
+            else:
+                print("Incorrect!")
+
+        if score > 0:
+            self.current_user.score_history.append(score)
+
+        print(f"\nQuiz completed! You scored {score} points.")
+        self.user_menu()
+
+
