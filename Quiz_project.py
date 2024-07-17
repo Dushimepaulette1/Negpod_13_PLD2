@@ -30,8 +30,8 @@ class Admin(User):
 
 class QuizApp:
     def __init__(self):
-        self.users = []  # Initialize empty list to store users
-        self.admins = []  # Initialize empty list to store admins
+        self.users = []
+        self.admins = []
         self.questions = {
             "ICT": [
                 Question("The internet is an example of a WAN. (True/False)", "True"),
@@ -195,96 +195,91 @@ class QuizApp:
                 Question("The sun rises in the west. (True/False)", "False"),
             ],
         }
-        self.current_user = None  # Initialize current user as None
-
-
-def main_menu(self):
-    print("\n******************************************")
-    print("*                                        *")
-    print("*        WELCOME TO THE MENU DRIVEN      *")
-    print("*               QUIZ PROGRAM             *")
-    print("*                                        *")
-    print("******************************************")
-    print("\nMAIN MENU:")
-    print("1. Create User")
-    print("2. Login")
-    print("3. Admin Login")
-    print("4. Exit")
-
-    choice = input("\nEnter your choice (1-4): ").strip()
-
-    if choice == "1":
-        self.create_user()
-    elif choice == "2":
-        self.login()
-    elif choice == "3":
-        self.admin_login()
-    elif choice == "4":
-        print("\nThank you for using the Quiz Program!")
-        return
-    else:
-        print("\nInvalid choice. Please enter a number from 1 to 4.")
-        self.main_menu()
-
-
-def create_user(self):
-    print("\nCREATE USER")
-    username = input("Enter username: ").strip()
-    password = input("Enter password: ").strip()
-    self.users.append(User(username, password))
-    print(f"\nUser '{username}' created successfully!")
-    self.main_menu()
-
-
-def login(self):
-    print("\nLOGIN")
-    username = input("Enter username: ").strip()
-    password = input("Enter password: ").strip()
-
-    for user in self.users:
-        if user.username == username and user.password == password:
-            self.current_user = user
-            self.user_menu()
-            return
-
-    print("\nInvalid username or password. Please try again.")
-    self.main_menu()
-
-
-def admin_login(self):
-    print("\nADMIN LOGIN")
-    password = input("Enter admin password: ").strip()
-    if password == "adminpass":
-        self.current_user = Admin("admin", password)
-        self.admin_menu()
-    else:
-        print("\nIncorrect admin password. Please try again.")
-        self.main_menu()
-
-
-def user_menu(self):
-    print(f"\nWelcome, {self.current_user.username}!")
-    print("\nUSER MENU:")
-    print("1. Take Quiz")
-    print("2. View Progress")
-    print("3. Logout")
-
-    choice = input("\nEnter your choice (1-3): ").strip()
-
-    if choice == "1":
-        self.take_quiz()
-    elif choice == "2":
-        self.current_user.view_progress()
-        self.user_menu()
-    elif choice == "3":
         self.current_user = None
-        print("\nLogged out successfully.")
-        self.main_menu()
-    else:
-        print("\nInvalid choice. Please enter a number from 1 to 3.")
-        self.user_menu()
 
- def admin_menu(self):
+    def main_menu(self):
+        print("\n******************************************")
+        print("*                                        *")
+        print("*        WELCOME TO THE MENU DRIVEN      *")
+        print("*               QUIZ PROGRAM             *")
+        print("*                                        *")
+        print("******************************************")
+        print("\nMAIN MENU:")
+        print("1. Create User")
+        print("2. Login")
+        print("3. Admin Login")
+        print("4. Exit")
+
+        choice = input("\nEnter your choice (1-4): ").strip()
+
+        if choice == "1":
+            self.create_user()
+        elif choice == "2":
+            self.login()
+        elif choice == "3":
+            self.admin_login()
+        elif choice == "4":
+            print("\nThank you for using the Quiz Program!")
+            return
+        else:
+            print("\nInvalid choice. Please enter a number from 1 to 4.")
+            self.main_menu()
+
+    def create_user(self):
+        print("\nCREATE USER")
+        username = input("Enter username: ").strip()
+        password = input("Enter password: ").strip()
+        self.users.append(User(username, password))
+        print(f"\nUser '{username}' created successfully!")
+        self.main_menu()
+
+    def login(self):
+        print("\nLOGIN")
+        username = input("Enter username: ").strip()
+        password = input("Enter password: ").strip()
+
+        for user in self.users:
+            if user.username == username and user.password == password:
+                self.current_user = user
+                self.user_menu()
+                return
+
+        print("\nInvalid username or password. Please try again.")
+        self.main_menu()
+
+    def admin_login(self):
+        print("\nADMIN LOGIN")
+        password = input("Enter admin password: ").strip()
+        if password == "adminpass":
+            self.current_user = Admin("admin", password)
+            self.admin_menu()
+        else:
+            print("\nIncorrect admin password. Please try again.")
+            self.main_menu()
+
+    def user_menu(self):
+        print(f"\nWelcome, {self.current_user.username}!")
+        print("\nUSER MENU:")
+        print("1. Take Quiz")
+        print("2. View Progress")
+        print("3. Logout")
+
+        choice = input("\nEnter your choice (1-3): ").strip()
+
+        if choice == "1":
+            self.take_quiz()
+        elif choice == "2":
+            self.current_user.view_progress()
+            self.user_menu()
+        elif choice == "3":
+            self.current_user = None
+            print("\nLogged out successfully.")
+            self.main_menu()
+        else:
+            print("\nInvalid choice. Please enter a number from 1 to 3.")
+            self.user_menu()
+
+    def admin_menu(self):
         print(f"\nWelcome, {self.current_user.username}!")
         print("\nADMIN MENU:")
         print("1. Add Question")
@@ -350,7 +345,7 @@ def user_menu(self):
         print(f"\nQuiz completed! You scored {score} points.")
         self.user_menu()
 
-  def add_question(self):
+    def add_question(self):
         print("\nADD QUESTION")
         print("Choose a subject to add a question to:")
         print("1. ICT")
@@ -365,7 +360,9 @@ def user_menu(self):
         subject = subjects[int(subject_choice) - 1]
 
         question_text = input("Enter the question text: ").strip()
-        correct_answer = input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
+        correct_answer = (
+            input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
+        )
 
         if subject in self.questions:
             self.questions[subject].append(Question(question_text, correct_answer))
@@ -391,15 +388,23 @@ def user_menu(self):
                 subject = question_subjects[question_index]
                 questions = self.questions[subject]
 
-                question_number = input(f"Enter the question number to update (1-{len(questions)}): ").strip()
+                question_number = input(
+                    f"Enter the question number to update (1-{len(questions)}): "
+                ).strip()
                 try:
                     question_number = int(question_number)
                     question_number -= 1  # Adjust index for zero-based indexing
 
                     if 0 <= question_number < len(questions):
                         question = questions[question_number]
-                        new_question_text = input("Enter the new question text: ").strip()
-                        new_correct_answer = input("Enter the new correct answer ('True' or 'False'): ").strip().capitalize()
+                        new_question_text = input(
+                            "Enter the new question text: "
+                        ).strip()
+                        new_correct_answer = (
+                            input("Enter the new correct answer ('True' or 'False'): ")
+                            .strip()
+                            .capitalize()
+                        )
 
                         question.text = new_question_text
                         question.answer = new_correct_answer.lower()
@@ -416,4 +421,25 @@ def user_menu(self):
 
         self.admin_menu()
 
+    def list_questions(self):
+        print("\nLIST OF QUESTIONS")
+        question_subjects = list(self.questions.keys())
+        question_subjects.sort()
 
+        for i, subject in enumerate(question_subjects, 1):
+            print(f"\n{i}. {subject}:")
+            questions = self.questions[subject]
+
+            for j, question in enumerate(questions, 1):
+                print(f"   {j}. {question.text}")
+
+        if not question_subjects:
+            print("\nNo questions found.")
+
+    def start(self):
+        self.main_menu()
+
+
+if __name__ == "__main__":
+    quiz_app = QuizApp()
+    quiz_app.start()
