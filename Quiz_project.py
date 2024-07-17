@@ -350,4 +350,70 @@ def user_menu(self):
         print(f"\nQuiz completed! You scored {score} points.")
         self.user_menu()
 
+  def add_question(self):
+        print("\nADD QUESTION")
+        print("Choose a subject to add a question to:")
+        print("1. ICT")
+        print("2. Maths")
+        print("3. English")
+        print("4. Science")
+        print("5. General Knowledge")
+
+        subject_choice = input("\nEnter your choice (1-5): ").strip()
+
+        subjects = ["ICT", "Maths", "English", "Science", "General Knowledge"]
+        subject = subjects[int(subject_choice) - 1]
+
+        question_text = input("Enter the question text: ").strip()
+        correct_answer = input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
+
+        if subject in self.questions:
+            self.questions[subject].append(Question(question_text, correct_answer))
+            print("\nQuestion added successfully!")
+        else:
+            print("\nInvalid subject.")
+
+        self.admin_menu()
+
+    def update_question(self):
+        print("\nUPDATE QUESTION")
+        self.list_questions()
+
+        question_index = input("\nEnter the index of the question to update: ").strip()
+
+        try:
+            question_index = int(question_index)
+            question_index -= 1  # Adjust index for zero-based indexing
+            question_subjects = list(self.questions.keys())
+            question_subjects.sort()
+
+            if 0 <= question_index < len(question_subjects):
+                subject = question_subjects[question_index]
+                questions = self.questions[subject]
+
+                question_number = input(f"Enter the question number to update (1-{len(questions)}): ").strip()
+                try:
+                    question_number = int(question_number)
+                    question_number -= 1  # Adjust index for zero-based indexing
+
+                    if 0 <= question_number < len(questions):
+                        question = questions[question_number]
+                        new_question_text = input("Enter the new question text: ").strip()
+                        new_correct_answer = input("Enter the new correct answer ('True' or 'False'): ").strip().capitalize()
+
+                        question.text = new_question_text
+                        question.answer = new_correct_answer.lower()
+
+                        print("\nQuestion updated successfully!")
+                    else:
+                        print("\nInvalid question number.")
+                except ValueError:
+                    print("\nInvalid input. Please enter a valid number.")
+            else:
+                print("\nInvalid index.")
+        except ValueError:
+            print("\nInvalid input. Please enter a valid number.")
+
+        self.admin_menu()
+
 
