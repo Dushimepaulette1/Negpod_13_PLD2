@@ -1,14 +1,21 @@
 #!/usr/bin/python3
+import json
+import os
+
 class Question:
     def __init__(self, text, answer):
         self.text = text
-        self.answer = (
-            answer.lower()
-        )  # Convert answer to lowercase for case insensitivity
+        self.answer = answer.lower()  # Convert answer to lowercase for case insensitivity
 
     def check_answer(self, user_answer):
         return user_answer.lower() == self.answer
 
+    def to_dict(self):
+        return {"text": self.text, "answer": self.answer}
+
+    @staticmethod
+    def from_dict(data):
+        return Question(data['text'], data['answer'])
 
 class User:
     def __init__(self, username, password):
@@ -23,179 +30,68 @@ class User:
         if not self.score_history:
             print("No progress yet.")
 
+    def to_dict(self):
+        return {"username": self.username, "password": self.password, "score_history": self.score_history}
+
+    @staticmethod
+    def from_dict(data):
+        user = User(data['username'], data['password'])
+        user.score_history = data.get('score_history', [])
+        return user
 
 class Admin(User):
     pass
-
 
 class QuizApp:
     def __init__(self):
         self.users = []
         self.admins = []
-        self.questions = {
-            "ICT": [
-                Question("The internet is an example of a WAN. (True/False)", "True"),
-                Question(
-                    "HTML stands for HyperText Markup Language. (True/False)", "True"
-                ),
-                Question("RAM is a type of permanent memory. (True/False)", "False"),
-                Question("Python is a type of snake. (True/False)", "True"),
-                Question("A byte is 16 bits. (True/False)", "False"),
-                Question("Java is a scripting language. (True/False)", "False"),
-                Question(
-                    "HTTP stands for HyperText Transfer Protocol. (True/False)", "True"
-                ),
-                Question(
-                    "GUI stands for Graphical User Interface. (True/False)", "True"
-                ),
-                Question(
-                    "URL stands for Uniform Resource Locator. (True/False)", "True"
-                ),
-                Question("LAN stands for Local Area Network. (True/False)", "True"),
-                Question("The internet is a type of LAN. (True/False)", "False"),
-                Question("JSP stands for Java Server Pages. (True/False)", "True"),
-                Question("CD stands for Compact Disk. (True/False)", "True"),
-                Question(
-                    "HTTP stands for Hypertext Transfer Protocol. (True/False)", "True"
-                ),
-                Question(
-                    "JPEG stands for Joint Photographic Expert Group. (True/False)",
-                    "True",
-                ),
-                Question("RAM stands for Random Access Memory. (True/False)", "True"),
-            ],
-            "Maths": [
-                Question("A triangle has three sides. (True/False)", "True"),
-                Question("The square root of 49 is 8. (True/False)", "False"),
-                Question("Pi is approximately 3.14159. (True/False)", "True"),
-                Question("5 * 5 = 30. (True/False)", "False"),
-                Question("A right angle is 90 degrees. (True/False)", "True"),
-                Question(
-                    "The sum of the angles in a triangle is 180 degrees. (True/False)",
-                    "True",
-                ),
-                Question("The number 0 is an even number. (True/False)", "True"),
-                Question(
-                    "The Fibonacci sequence starts with 0 and 1. (True/False)", "True"
-                ),
-                Question(
-                    "A prime number has exactly two factors. (True/False)", "True"
-                ),
-                Question(
-                    "The area of a square is calculated as s * s. (True/False)", "True"
-                ),
-                Question("C stands for Compilers. (True/False)", "True"),
-                Question("V stands for Virtual. (True/False)", "True"),
-                Question("F stands for Fast. (True/False)", "True"),
-                Question("J stands for JavaScript. (True/False)", "True"),
-                Question("L stands for Language. (True/False)", "True"),
-            ],
-            "English": [
-                Question("An adjective describes a noun. (True/False)", "True"),
-                Question(
-                    "'They're' is a contraction of 'they are'. (True/False)", "True"
-                ),
-                Question("The word 'happy' is a noun. (True/False)", "False"),
-                Question("The word 'quickly' is an adverb. (True/False)", "True"),
-                Question("A pronoun takes the place of a noun. (True/False)", "True"),
-                Question("Shakespeare wrote 'Romeo and Juliet'. (True/False)", "True"),
-                Question(
-                    "A palindrome reads the same forwards and backwards. (True/False)",
-                    "True",
-                ),
-                Question(
-                    "English is the most spoken language in the world. (True/False)",
-                    "False",
-                ),
-                Question(
-                    "A comma is used to separate items in a list. (True/False)", "True"
-                ),
-                Question("The past tense of 'go' is 'gone'. (True/False)", "True"),
-                Question(
-                    "The word 'colour' is spelled with 'or' in American English. (True/False)",
-                    "False",
-                ),
-                Question("The word 'the' is a preposition. (True/False)", "False"),
-                Question("The word 'time' is a noun. (True/False)", "True"),
-                Question("The word 'quick' is a verb. (True/False)", "False"),
-                Question("The word 'yellow' is an adverb. (True/False)", "False"),
-            ],
-            "Science": [
-                Question("Water boils at 100 degrees Celsius. (True/False)", "True"),
-                Question("Humans have three lungs. (True/False)", "False"),
-                Question("Plants produce oxygen. (True/False)", "True"),
-                Question("The sun is a planet. (True/False)", "False"),
-                Question("Sound travels faster than light. (True/False)", "False"),
-                Question("The Earth orbits the Moon. (True/False)", "False"),
-                Question("The human body has 206 bones. (True/False)", "True"),
-                Question(
-                    "Gravity is stronger on the Moon than on Earth. (True/False)",
-                    "False",
-                ),
-                Question(
-                    "Oxygen is the most abundant element in Earth's atmosphere. (True/False)",
-                    "True",
-                ),
-                Question("Mars is known as the 'Red Planet'. (True/False)", "True"),
-                Question(
-                    "The Milky Way is the galaxy that contains our Solar System. (True/False)",
-                    "True",
-                ),
-                Question(
-                    "Water covers approximately 71% of Earth's surface. (True/False)",
-                    "True",
-                ),
-                Question("A light-year measures time. (True/False)", "False"),
-                Question(
-                    "Astronomy is the study of stars and planets. (True/False)", "True"
-                ),
-                Question(
-                    "A telescope is used to observe distant objects in space. (True/False)",
-                    "True",
-                ),
-            ],
-            "General Knowledge": [
-                Question("The capital of France is Paris. (True/False)", "True"),
-                Question(
-                    "The Great Wall of China is visible from space. (True/False)",
-                    "False",
-                ),
-                Question("There are 50 states in the USA. (True/False)", "True"),
-                Question(
-                    "The largest ocean on Earth is the Atlantic Ocean. (True/False)",
-                    "False",
-                ),
-                Question(
-                    "Mount Everest is the tallest mountain in the world. (True/False)",
-                    "True",
-                ),
-                Question(
-                    "The Nile River is the longest river in the world. (True/False)",
-                    "False",
-                ),
-                Question(
-                    "Australia is both a country and a continent. (True/False)", "True"
-                ),
-                Question(
-                    "Albert Einstein developed the theory of relativity. (True/False)",
-                    "True",
-                ),
-                Question(
-                    "The first human to walk on the Moon was Neil Armstrong. (True/False)",
-                    "True",
-                ),
-                Question(
-                    "Venus is the hottest planet in our solar system. (True/False)",
-                    "True",
-                ),
-                Question("An apple is a fruit. (True/False)", "True"),
-                Question("The sky is purple. (True/False)", "False"),
-                Question("Dogs meow. (True/False)", "False"),
-                Question("The world is flat. (True/False)", "False"),
-                Question("The sun rises in the west. (True/False)", "False"),
-            ],
-        }
+        self.questions = self.load_questions()
         self.current_user = None
+        self.load_users()
+
+    def load_users(self):
+        if os.path.exists("credentials.json"):
+            with open("credentials.json", "r") as file:
+                try:
+                    users_data = json.load(file)
+                    self.users = [User.from_dict(user) for user in users_data]
+                except json.JSONDecodeError:
+                    self.users = []
+
+    def save_users(self):
+        with open("credentials.json", "w") as file:
+            json.dump([user.to_dict() for user in self.users], file)
+
+    def load_questions(self):
+        if os.path.exists("quizzes.json"):
+            with open("quizzes.json", "r") as file:
+                try:
+                    data = json.load(file)
+                    return {subject: [Question.from_dict(q) for q in questions] for subject, questions in data.items()}
+                except json.JSONDecodeError:
+                    return {}
+        return {}
+
+    def save_questions(self):
+        with open("quizzes.json", "w") as file:
+            json.dump({subject: [q.to_dict() for q in questions] for subject, questions in self.questions.items()}, file)
+
+    def load_progress(self):
+        if os.path.exists("progress.json"):
+            with open("progress.json", "r") as file:
+                try:
+                    data = json.load(file)
+                    for user_data in data:
+                        for user in self.users:
+                            if user.username == user_data['username']:
+                                user.score_history = user_data.get('score_history', [])
+                except json.JSONDecodeError:
+                    pass
+
+    def save_progress(self):
+        with open("progress.json", "w") as file:
+            json.dump([user.to_dict() for user in self.users], file)
 
     def main_menu(self):
         print("\n******************************************")
@@ -220,6 +116,9 @@ class QuizApp:
             self.admin_login()
         elif choice == "4":
             print("\nThank you for using the Quiz Program!")
+            self.save_users()
+            self.save_questions()
+            self.save_progress()
             return
         else:
             print("\nInvalid choice. Please enter a number from 1 to 4.")
@@ -230,6 +129,7 @@ class QuizApp:
         username = input("Enter username: ").strip()
         password = input("Enter password: ").strip()
         self.users.append(User(username, password))
+        self.save_users()
         print(f"\nUser '{username}' created successfully!")
         self.main_menu()
 
@@ -341,6 +241,7 @@ class QuizApp:
 
         if score > 0:
             self.current_user.score_history.append(score)
+            self.save_progress()
 
         print(f"\nQuiz completed! You scored {score} points.")
         self.user_menu()
@@ -360,12 +261,11 @@ class QuizApp:
         subject = subjects[int(subject_choice) - 1]
 
         question_text = input("Enter the question text: ").strip()
-        correct_answer = (
-            input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
-        )
+        correct_answer = input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
 
         if subject in self.questions:
             self.questions[subject].append(Question(question_text, correct_answer))
+            self.save_questions()
             print("\nQuestion added successfully!")
         else:
             print("\nInvalid subject.")
@@ -379,67 +279,81 @@ class QuizApp:
         question_index = input("\nEnter the index of the question to update: ").strip()
 
         try:
-            question_index = int(question_index)
-            question_index -= 1  # Adjust index for zero-based indexing
-            question_subjects = list(self.questions.keys())
-            question_subjects.sort()
+            question_index = int(question_index) - 1
+            if question_index < 0:
+                raise ValueError
 
-            if 0 <= question_index < len(question_subjects):
-                subject = question_subjects[question_index]
-                questions = self.questions[subject]
+            subjects = ["ICT", "Maths", "English", "Science", "General Knowledge"]
+            subject = input("Enter the subject of the question: ").strip()
 
-                question_number = input(
-                    f"Enter the question number to update (1-{len(questions)}): "
-                ).strip()
-                try:
-                    question_number = int(question_number)
-                    question_number -= 1  # Adjust index for zero-based indexing
+            if subject not in subjects:
+                print("\nInvalid subject.")
+                self.admin_menu()
 
-                    if 0 <= question_number < len(questions):
-                        question = questions[question_number]
-                        new_question_text = input(
-                            "Enter the new question text: "
-                        ).strip()
-                        new_correct_answer = (
-                            input("Enter the new correct answer ('True' or 'False'): ")
-                            .strip()
-                            .capitalize()
-                        )
+            if subject in self.questions:
+                if 0 <= question_index < len(self.questions[subject]):
+                    question = self.questions[subject][question_index]
+                    print(f"Current question: {question.text}")
+                    new_text = input("Enter new question text: ").strip()
+                    new_answer = input("Enter new answer ('True' or 'False'): ").strip().capitalize()
 
-                        question.text = new_question_text
-                        question.answer = new_correct_answer.lower()
+                    question.text = new_text
+                    question.answer = new_answer
 
-                        print("\nQuestion updated successfully!")
-                    else:
-                        print("\nInvalid question number.")
-                except ValueError:
-                    print("\nInvalid input. Please enter a valid number.")
+                    self.save_questions()
+                    print("\nQuestion updated successfully!")
+                else:
+                    print("\nInvalid question index.")
             else:
-                print("\nInvalid index.")
+                print("\nSubject not found.")
+
+            self.admin_menu()
+
         except ValueError:
             print("\nInvalid input. Please enter a valid number.")
+            self.update_question()
 
-        self.admin_menu()
+    def delete_question(self):
+        print("\nDELETE QUESTION")
+        self.list_questions()
+
+        question_index = input("\nEnter the index of the question to delete: ").strip()
+
+        try:
+            question_index = int(question_index) - 1
+            if question_index < 0:
+                raise ValueError
+
+            subjects = ["ICT", "Maths", "English", "Science", "General Knowledge"]
+            subject = input("Enter the subject of the question: ").strip()
+
+            if subject not in subjects:
+                print("\nInvalid subject.")
+                self.admin_menu()
+
+            if subject in self.questions:
+                if 0 <= question_index < len(self.questions[subject]):
+                    self.questions[subject].pop(question_index)
+                    self.save_questions()
+                    print("\nQuestion deleted successfully!")
+                else:
+                    print("\nInvalid question index.")
+            else:
+                print("\nSubject not found.")
+
+            self.admin_menu()
+
+        except ValueError:
+            print("\nInvalid input. Please enter a valid number.")
+            self.delete_question()
 
     def list_questions(self):
-        print("\nLIST OF QUESTIONS")
-        question_subjects = list(self.questions.keys())
-        question_subjects.sort()
-
-        for i, subject in enumerate(question_subjects, 1):
-            print(f"\n{i}. {subject}:")
-            questions = self.questions[subject]
-
-            for j, question in enumerate(questions, 1):
-                print(f"   {j}. {question.text}")
-
-        if not question_subjects:
-            print("\nNo questions found.")
-
-    def start(self):
-        self.main_menu()
-
+        print("\nLIST ALL QUESTIONS")
+        for subject, questions in self.questions.items():
+            print(f"\nSubject: {subject}")
+            for i, question in enumerate(questions, 1):
+                print(f"{i}. {question.text} (Answer: {question.answer})")
 
 if __name__ == "__main__":
-    quiz_app = QuizApp()
-    quiz_app.start()
+    app = QuizApp()
+    app.main_menu()
