@@ -2,10 +2,13 @@
 import json
 import os
 
+
 class Question:
     def __init__(self, text, answer):
         self.text = text
-        self.answer = answer.lower()  # Convert answer to lowercase for case insensitivity
+        self.answer = (
+            answer.lower()
+        )  # Convert answer to lowercase for case insensitivity
 
     def check_answer(self, user_answer):
         return user_answer.lower() == self.answer
@@ -15,7 +18,8 @@ class Question:
 
     @staticmethod
     def from_dict(data):
-        return Question(data['text'], data['answer'])
+        return Question(data["text"], data["answer"])
+
 
 class User:
     def __init__(self, username, password):
@@ -26,21 +30,27 @@ class User:
     def view_progress(self):
         print("\nYour Progress:")
         for i, score in enumerate(self.score_history, 1):
-            print(f"Quiz {i}: {score} points")
+            print("Quiz {}: {} points".format(i, score))
         if not self.score_history:
             print("No progress yet.")
 
     def to_dict(self):
-        return {"username": self.username, "password": self.password, "score_history": self.score_history}
+        return {
+            "username": self.username,
+            "password": self.password,
+            "score_history": self.score_history,
+        }
 
     @staticmethod
     def from_dict(data):
-        user = User(data['username'], data['password'])
-        user.score_history = data.get('score_history', [])
+        user = User(data["username"], data["password"])
+        user.score_history = data.get("score_history", [])
         return user
+
 
 class Admin(User):
     pass
+
 
 class QuizApp:
     def __init__(self):
@@ -68,14 +78,23 @@ class QuizApp:
             with open("quizzes.json", "r") as file:
                 try:
                     data = json.load(file)
-                    return {subject: [Question.from_dict(q) for q in questions] for subject, questions in data.items()}
+                    return {
+                        subject: [Question.from_dict(q) for q in questions]
+                        for subject, questions in data.items()
+                    }
                 except json.JSONDecodeError:
                     return {}
         return {}
 
     def save_questions(self):
         with open("quizzes.json", "w") as file:
-            json.dump({subject: [q.to_dict() for q in questions] for subject, questions in self.questions.items()}, file)
+            json.dump(
+                {
+                    subject: [q.to_dict() for q in questions]
+                    for subject, questions in self.questions.items()
+                },
+                file,
+            )
 
     def load_progress(self):
         if os.path.exists("progress.json"):
@@ -84,8 +103,8 @@ class QuizApp:
                     data = json.load(file)
                     for user_data in data:
                         for user in self.users:
-                            if user.username == user_data['username']:
-                                user.score_history = user_data.get('score_history', [])
+                            if user.username == user_data["username"]:
+                                user.score_history = user_data.get("score_history", [])
                 except json.JSONDecodeError:
                     pass
 
@@ -130,7 +149,7 @@ class QuizApp:
         password = input("Enter password: ").strip()
         self.users.append(User(username, password))
         self.save_users()
-        print(f"\nUser '{username}' created successfully!")
+        print("\nUser '{}' created successfully!".format(username))
         self.main_menu()
 
     def login(self):
@@ -158,7 +177,7 @@ class QuizApp:
             self.main_menu()
 
     def user_menu(self):
-        print(f"\nWelcome, {self.current_user.username}!")
+        print("\nWelcome, {}!".format(self.current_user.username))
         print("\nUSER MENU:")
         print("1. Take Quiz")
         print("2. View Progress")
@@ -180,7 +199,7 @@ class QuizApp:
             self.user_menu()
 
     def admin_menu(self):
-        print(f"\nWelcome, {self.current_user.username}!")
+        print("\nWelcome, {}!".format(self.current_user.username))
         print("\nADMIN MENU:")
         print("1. Add Question")
         print("2. Update Question")
@@ -197,7 +216,7 @@ class QuizApp:
         elif choice == "3":
             self.delete_question()
         elif choice == "4":
-            self.list_questions()
+            self.list_all_questions()
         elif choice == "5":
             self.current_user = None
             print("\nLogged out successfully.")
@@ -223,7 +242,9 @@ class QuizApp:
         questions = self.questions.get(subject, [])
 
         if not questions:
-            print(f"\nNo questions found for {subject}. Please contact the admin.")
+            print(
+                "\nNo questions found for {}. Please contact the admin.".format(subject)
+            )
             self.user_menu()
 
         score = 0
@@ -243,7 +264,7 @@ class QuizApp:
             self.current_user.score_history.append(score)
             self.save_progress()
 
-        print(f"\nQuiz completed! You scored {score} points.")
+        print("\nQuiz completed! You scored {} points.".format(score))
         self.user_menu()
 
     def add_question(self):
@@ -261,7 +282,9 @@ class QuizApp:
         subject = subjects[int(subject_choice) - 1]
 
         question_text = input("Enter the question text: ").strip()
-        correct_answer = input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
+        correct_answer = (
+            input("Enter the correct answer ('True' or 'False'): ").strip().capitalize()
+        )
 
         if subject in self.questions:
             self.questions[subject].append(Question(question_text, correct_answer))
@@ -293,9 +316,13 @@ class QuizApp:
             if subject in self.questions:
                 if 0 <= question_index < len(self.questions[subject]):
                     question = self.questions[subject][question_index]
-                    print(f"Current question: {question.text}")
+                    print("Current question: {}".format(question.text))
                     new_text = input("Enter new question text: ").strip()
-                    new_answer = input("Enter new answer ('True' or 'False'): ").strip().capitalize()
+                    new_answer = (
+                        input("Enter new answer ('True' or 'False'): ")
+                        .strip()
+                        .capitalize()
+                    )
 
                     question.text = new_text
                     question.answer = new_answer
@@ -350,9 +377,19 @@ class QuizApp:
     def list_questions(self):
         print("\nLIST ALL QUESTIONS")
         for subject, questions in self.questions.items():
-            print(f"\nSubject: {subject}")
+            print("\nSubject: {}".format(subject))
             for i, question in enumerate(questions, 1):
-                print(f"{i}. {question.text} (Answer: {question.answer})")
+                print("{}. {} (Answer: {})".format(i, question.text, question.answer))
+
+    def list_all_questions(self):
+        print("\nLIST ALL QUESTIONS")
+        for subject, questions in self.questions.items():
+            print("\nSubject: {}".format(subject))
+            for i, question in enumerate(questions, 1):
+                print("{}. {} (Answer: {})".format(i, question.text, question.answer))
+
+        self.admin_menu()
+
 
 if __name__ == "__main__":
     app = QuizApp()
